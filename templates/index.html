@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+{% block title %} Home {% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <div class="row">
+        <div class="col md-12">
+            <div class="p-3">
+                
+                <h2>Gerenciar <strong>itens</strong> 
+                    <button type="button" class="btn btn-success float-end"
+                        onclick="open_add_item_modal()">Adcionar item</button></h2>
+
+                        <div class="container w-100">
+                           
+                            {% with messages=get_flashed_messages(with_categories=true) %}
+                              {%if messages%}
+                                {%for category, message in messages%}
+                                  <div class="alert alert-success">                                    
+                                    {{message}}
+                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close" >
+                                    </button>
+                                  </div>
+                                {%endfor%}
+                              {%endif%}
+                            {%endwith%}
+                          </div>
+
+                
+
+                <table class="table table-hover table-dark">
+
+                    <tr>
+                        <th>Situação</th>
+                        <th>Descrição</th>
+                        <th>Item</th>
+                        <th>Codigo-Item</th>
+                        <th>Ação</th>
+                    </tr>
+
+
+                    {% for row in itens %}
+                    <tr>
+                        <td>{{row.situação}}</td>
+                        <td>{{row.descrição}}</td>
+                        <td>{{row.item}}</td>
+                        <td>{{row.codigo_item}}</td>
+                        <td>
+                            <a href="/update/{{row.id}}" type="button" class="editItem btn btn-warning btn-xs" data-bs-toggle="modal" data-bs-target="#edit_item_Modal{{row.id}}">Editar</a>
+                            <a href="" class="btn btn-danger btn-xs"
+                                onclick="return confirm('Tem certeza que quer deletar este item ?')">Deletar</a>
+                        </td>
+                    </tr>
+
+                    
+                <!-- Adcionar Item Modal -->
+
+
+                <div class="modal fade" id="add_item_Modal" tabindex="-1" role="dialog" data-bs-backdrop="static">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Adcionar Item</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="insert" method="POST" class="submit">
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Situação:</label>
+
+                                        <select name="situacao" class="form-control" >
+                                            <option value="Ativo" selected>Ativo</option>
+                                            <option value="Desativado">Desativado</option>
+                                        </select>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Descrição:</label>
+                                        <input type="text" name="descricao" class="form-control" value="{{row.situação}}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Item:</label>
+                                        <input type="text" name="item" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Codigo-item:</label>
+                                        <input type="text" name="codigo_item" class="form-control" required>
+                                    </div>                              
+                                    
+                                </form>
+                               
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary" onclick="form_submit()">Cadastrar item</button>                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Adcionar Item Modal -->
+
+                <!-- Editar Item Modal -->
+                <div class="modal fade" id="edit_item_Modal{{row.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar Item</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="update" method="POST" class="update">
+                                    <input type="hidden" name="id" value="{{row.id}}">
+                                    <div class="form-group">
+                                      
+                                        <label for="recipient-name" class="col-form-label">Situação:</label>
+                                        
+                                        <select class="form-control" name="situacao">
+                                            <option value="Ativo" selected>Ativo</option>
+                                            <option value="Desativado">Desativado</option>
+                                        </select>
+                
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Descrição:</label>
+                                        <input type="text" class="form-control" name="descricao" value="{{row.descrição}}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Item:</label>
+                                        <input type="text" class="form-control" name="item" value="{{row.item}}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="recipient-name" class="col-form-label">Codigo-item:</label>
+                                        <input type="text" class="form-control" name="codigo_item" value="{{row.codigo_item}}" required>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                <button  type="submit" class="btn btn-primary" onclick="form_update()">Salvar alterações</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                
+                <!-- /Editar Item Modal -->
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
