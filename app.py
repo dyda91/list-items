@@ -1,19 +1,9 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, session
-from flask_migrate import Migrate
-from database import db
+
+from database import db, app
 from models.models import Itens
 
-app = Flask (__name__)
-db.init_app(app)
-conexao = 'sqlite:///database.db'
 
-app.config['SECRET_KEY'] = 'my-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = conexao
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-
-
-migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
