@@ -1,14 +1,14 @@
 from flask import Flask, render_template, flash, redirect, url_for, request, session
 
-from database import app
+from database import app, db
 from models.models import Itens
 
 
 
-@app.route('/')
+@app.route('/', methods = ['GET','POST'])
 def index():
     page = request.args.get('page', 1, type=int)
-    dados = Itens.query.paginate(page=page,per_page=10)
+    dados = Itens.query.paginate(page=page,per_page=10)    
     return render_template('index.html', itens = dados)
 
 @app.route('/insert', methods=['POST'])
@@ -44,13 +44,26 @@ def update():
         flash (f'Item editado com sucesso', category='soccess')
 
         return redirect(url_for('index'))
+        
 
-@app.route('/search', methods = ['GET','POST'])
-def search(results=None):
+@app.route('/busca', methods=['GET', 'POST'])
+def busca():
     if request.method == 'POST':
-        results = Itens.query.filter_by(request.form.get('search')).all()
-    return redirect(url_for('index', results = results))
+
+        busca = Itens.query.filter_by(item = request.form.get('search')).all()
+
+        return render_template('search.html', busca = busca)
 
 
+@app.route('/delete/<id>', methods=['GET', 'POST'])
+def delete(id):
+    item = Itens.query.get(id)
+
+    db.session.delete(item)
+    db.session.commit()
+
+    flash (f'Item deletado com sucesso', category='soccess')
+
+    return redirect(url_for('index'))
 if __name__ == "__main__":
     app.run(debug=True)
