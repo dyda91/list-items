@@ -12,17 +12,15 @@ edit_modal.show()
 }
 
 function form_submit(){
+    event.preventDefault();
     document.querySelector(".submit").submit();
     
     console.log('ok')
 }
 
 function form_update(){
+    event.preventDefault();
     document.querySelector(".update").submit();
     
     console.log('ok')
 }
-
-
-
-

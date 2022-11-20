@@ -9,27 +9,36 @@
     <div class="row">
         <div class="col md-12">
             <div class="p-3">
-                
-                <h2>Gerenciar <strong>itens</strong> 
-                    <button type="button" class="btn btn-success float-end"
-                        onclick="open_add_item_modal()">Adcionar item</button></h2>
+                <div class="input-group mb-3 d-flex justify-content-end">
+                    <form method="POST" action="busca" class="input-group w-25">
+                    <input type="search" class="form-control w-25" placeholder="Pesquisar por item" name="search" aria-label="Pesquisar por item" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-success" type="button">Buscar</button>
+                    </div>
+                </form>
+                </div>
+                <h2>Gerenciar <strong>itens</strong>
+                   
+                    <button type="button" class="btn btn-success float-end" onclick="open_add_item_modal()">Adcionar
+                        item</button>
+                </h2>
 
-                        <div class="container w-100">
-                           
-                            {% with messages=get_flashed_messages(with_categories=true) %}
-                              {%if messages%}
-                                {%for category, message in messages%}
-                                  <div class="alert alert-success">                                    
-                                    {{message}}
-                                    <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close" >
-                                    </button>
-                                  </div>
-                                {%endfor%}
-                              {%endif%}
-                            {%endwith%}
-                          </div>
+                <div class="container w-100">
 
-                
+                    {% with messages=get_flashed_messages(with_categories=true) %}
+                    {%if messages%}
+                    {%for category, message in messages%}
+                    <div class="alert alert-success">
+                        {{message}}
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                    {%endfor%}
+                    {%endif%}
+                    {%endwith%}
+                </div>
+
+
 
                 <table class="table table-hover table-dark">
 
@@ -42,20 +51,94 @@
                     </tr>
 
 
-                    {% for row in itens %}
+                    {% for row in itens.items %}
                     <tr>
                         <td>{{row.situação}}</td>
                         <td>{{row.descrição}}</td>
                         <td>{{row.item}}</td>
                         <td>{{row.codigo_item}}</td>
                         <td>
-                            <a href="/update/{{row.id}}" type="button" class="editItem btn btn-warning btn-xs" data-bs-toggle="modal" data-bs-target="#edit_item_Modal{{row.id}}">Editar</a>
+                            <a href="update/{{row.id}}" class="editItem btn btn-warning btn-xs" data-bs-toggle="modal"
+                                data-bs-target="#edit_item_Modal{{row.id}}"><img
+                                    src="{{url_for('static', filename='images/pencil-fill.svg')}}" alt=""></a>
                             <a href="" class="btn btn-danger btn-xs"
-                                onclick="return confirm('Tem certeza que quer deletar este item ?')">Deletar</a>
+                                onclick="return confirm('Tem certeza que quer deletar este item ?')"><img
+                                    src="{{url_for('static', filename='images/trash3-fill.svg')}}" alt=""></a>
                         </td>
                     </tr>
 
-                    
+
+
+
+                    <!-- Editar Item Modal -->
+                    <div class="modal fade" id="edit_item_Modal{{row.id}}" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Editar Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('update')}}" method="POST" class="update">
+                                        <input type="hidden" name="id" value="{{row.id}}">
+                                        <div class="form-group">
+
+                                            <label for="recipient-name" class="col-form-label">Situação:</label>
+
+                                            <select class="form-control" name="situacao">
+                                                <option value="Ativo" selected>Ativo</option>
+                                                <option value="Desativado">Desativado</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Descrição:</label>
+                                            <input type="text" class="form-control" name="descricao"
+                                                value="{{row.descrição}}" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Item:</label>
+                                            <input type="text" class="form-control" name="item" value="{{row.item}}"
+                                                required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Codigo-item:</label>
+                                            <input type="text" class="form-control" name="codigo_item"
+                                                value="{{row.codigo_item}}" required>
+                                        </div>
+                                        <div class="modal-footer mt-3">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Fechar</button>
+                                            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /Editar Item Modal -->
+                    {% endfor %}
+                </table>
+
+                {% for page_num in itens.iter_pages(left_edge=1, right_edge=1,
+                    left_current=1, right_current=2) %} {% if page_num %} {% if itens.page ==
+                    page_num %}
+                    <a
+                      class="btn btn-dark mb-4"
+                      href="{{ url_for('index', page=page_num) }}"
+                      >{{ page_num }}</a
+                    >
+                    {% else %}
+                    <a
+                      class="btn btn-outline-dark mb-4"
+                      href="{{ url_for('index', page=page_num) }}"
+                      >{{ page_num }}</a
+                    >
+                    {% endif %} {% else %} ... {% endif %} {% endfor %}
                 <!-- Adcionar Item Modal -->
 
 
@@ -72,7 +155,7 @@
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Situação:</label>
 
-                                        <select name="situacao" class="form-control" >
+                                        <select name="situacao" class="form-control">
                                             <option value="Ativo" selected>Ativo</option>
                                             <option value="Desativado">Desativado</option>
                                         </select>
@@ -80,7 +163,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Descrição:</label>
-                                        <input type="text" name="descricao" class="form-control" value="{{row.situação}}" required>
+                                        <input type="text" name="descricao" class="form-control" required>
                                     </div>
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Item:</label>
@@ -89,67 +172,21 @@
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label">Codigo-item:</label>
                                         <input type="text" name="codigo_item" class="form-control" required>
-                                    </div>                              
-                                    
+                                    </div>
+
                                 </form>
-                               
+
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary" onclick="form_submit()">Cadastrar item</button>                                
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-primary" onclick="form_submit()">Cadastrar
+                                    item</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- /Adcionar Item Modal -->
-
-                <!-- Editar Item Modal -->
-                <div class="modal fade" id="edit_item_Modal{{row.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Editar Item</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="update" method="POST" class="update">
-                                    <input type="hidden" name="id" value="{{row.id}}">
-                                    <div class="form-group">
-                                      
-                                        <label for="recipient-name" class="col-form-label">Situação:</label>
-                                        
-                                        <select class="form-control" name="situacao">
-                                            <option value="Ativo" selected>Ativo</option>
-                                            <option value="Desativado">Desativado</option>
-                                        </select>
-                
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Descrição:</label>
-                                        <input type="text" class="form-control" name="descricao" value="{{row.descrição}}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Item:</label>
-                                        <input type="text" class="form-control" name="item" value="{{row.item}}" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Codigo-item:</label>
-                                        <input type="text" class="form-control" name="codigo_item" value="{{row.codigo_item}}" required>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                                <button  type="submit" class="btn btn-primary" onclick="form_update()">Salvar alterações</button>
-                            </div>
-                        </div>
-                    </div>
-                  </div>
-                
-                <!-- /Editar Item Modal -->
-                    {% endfor %}
-                </table>
             </div>
         </div>
     </div>

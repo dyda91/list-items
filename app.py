@@ -17,7 +17,8 @@ migrate = Migrate(app, db)
 
 @app.route('/')
 def index():
-    dados = Itens.query.all()
+    page = request.args.get('page', 1, type=int)
+    dados = Itens.query.paginate(page=page,per_page=10)
     return render_template('index.html', itens = dados)
 
 @app.route('/insert', methods=['POST'])
@@ -41,7 +42,7 @@ def insert():
 def update():
     
     if request.method == 'POST':
-        edit_item = Itens.query.get(request.form['id'])
+        edit_item = Itens.query.get(request.form.get('id'))
         
         edit_item.situação = request.form['situacao']        
         edit_item.descrição = request.form['descricao']
@@ -53,6 +54,12 @@ def update():
         flash (f'Item editado com sucesso', category='soccess')
 
         return redirect(url_for('index'))
+
+@app.route('/search', methods = ['GET','POST'])
+def search(results=None):
+    if request.method == 'POST':
+        results = Itens.query.filter_by(request.form.get('search')).all()
+    return redirect(url_for('index', results = results))
 
 
 if __name__ == "__main__":
