@@ -9,6 +9,7 @@
     <div class="row">
         <div class="col md-12">
             <div class="p-3">
+                <a class="d-block text-center mt-2 small float-start" href="{{ url_for('logout')}}">Sair</a>
                 <div class="input-group mb-3 d-flex justify-content-end">
                     <form method="POST" action="{{url_for('busca')}}" class="input-group w-25">
                     <input type="search" class="form-control  w-25" placeholder="Pesquisar por item" name="search" aria-label="Pesquisar por item" aria-describedby="basic-addon2" autocomplete="off">
@@ -19,7 +20,8 @@
                 </div>
                 <h2>Gerenciar <strong>itens</strong>
                    
-                    <button type="button" class="btn btn-success float-end" onclick="open_add_item_modal()">Adcionar
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal"
+                    data-bs-target="#add_item_Modal">Adcionar
                         item</button>
                 </h2>
 
@@ -45,21 +47,23 @@
 
                 <table class="table table-hover table-dark">
 
-                    <tr>
+                    <tr>                        
+                        <th>Cadastrado por:</th>
                         <th>Situação</th>
-                        <th>Descrição</th>
                         <th>Item</th>
                         <th>Codigo-Item</th>
+                        <th>Descrição</th>
                         <th>Ação</th>
                     </tr>
 
 
                     {% for row in itens.items %}
-                    <tr>
+                    <tr>                      
+                        <td>{{row.user_username}}</td>
                         <td>{{row.situação}}</td>
-                        <td>{{row.descrição}}</td>
                         <td>{{row.item}}</td>
-                        <td>{{row.codigo_item}}</td>
+                        <td>{{row.codigo_item}}</td> 
+                        <td>{{row.descrição}}</td> 
                         <td>
                             <a href="update/{{row.id}}" class="editItem btn btn-warning btn-xs" data-bs-toggle="modal"
                                 data-bs-target="#edit_item_Modal{{row.id}}"><img
@@ -73,9 +77,10 @@
 
 
 
-               {% include 'modals.html' %}
+               {% include 'edit_modal.html' %}
                     {% endfor %}
                 </table>
+                {% include 'add_modal.html' %}
 
                 {% for page_num in itens.iter_pages(left_edge=1, right_edge=1,
                     left_current=1, right_current=2) %} {% if page_num %} {% if itens.page ==
