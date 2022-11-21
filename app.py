@@ -132,13 +132,5 @@ def signin():
     return render_template('signin.html', form=form)
 
 
-@app.route('/teste')
-def teste():
-    novo_item = Itens(user_username=current_user.username, situação='situação', descrição='descrição', item='item', codigo_item='codigo_item')
-    db.session.add(novo_item)
-    db.session.commit() 
-    return('sucesso')
-
-
 if __name__ == "__main__":
     app.run(debug=True)
