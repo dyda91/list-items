@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col md-12">
             <div class="p-3">
-                <a class="d-block text-center mt-2 small float-start" href="{{ url_for('logout')}}">Sair</a>
+                <a class="d-block text-center mt-2 small float-start btn btn-danger btn-xs" href="{{ url_for('logout')}}">Sair</a>
                 <div class="input-group mb-3 d-flex justify-content-end">
                     <form method="POST" action="{{url_for('busca')}}" class="input-group w-25">
                     <input type="search" class="form-control  w-25" placeholder="Pesquisar por item" name="search" aria-label="Pesquisar por item" aria-describedby="basic-addon2" autocomplete="off">
