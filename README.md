@@ -1,8 +1,6 @@
 <h1 align="center">LISTA DE ITENS.</h1>
-<p align="center">ToDO list feito em Python (Flask), contendo um CRUD para dadastro, edição e exclusão de itens em uma banco de dados SQL</p>
-  
-  • Contem sistema de cadastro de usuário, login e session
-  • como é um projeto para fins didáticos foi utilizado o SQLite como database, alem disso para fazer a conexão foi utilizado o ORM SQLAlchemy.
+<p align="center">ToDO list feito em Python (Flask), contendo um CRUD para cadastro, edição e exclusão de itens em uma banco de dados SQL, utilizado o SQLite como database e o ORM SQLAlchemy </p>
+<p align="center">ToDO list feito em Python (Flask), Conta tambem com um sistema de cadastro de usuário, login e session </p>
 
 PASSOS PARA EXECUTAR A APLICAÇÃO.
 É recomendado criar um ambiente virtual para executar essa aplicação (venv)
