@@ -2,7 +2,6 @@ from enum import unique
 from re import T
 from flask_login import UserMixin
 from config import db, login_manager
-from flask_login import UserMixin
 
 
 @login_manager.user_loader
